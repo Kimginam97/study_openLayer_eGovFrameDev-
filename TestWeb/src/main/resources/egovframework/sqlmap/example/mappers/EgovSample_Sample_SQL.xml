@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="egovframework.example.sample.service.impl.SampleMapper">
+
+	<resultMap id="sample" type="egovframework.example.sample.service.SampleVO">
+		<result property="no" column="no"/>
+		<result property="name" column="name"/>
+		<result property="bn" column="bn"/>
+		<result property="detail" column="detail"/>
+	</resultMap>
+
+	<insert id="insertSample" parameterType="SampleVO">
+
+			INSERT INTO WEBTESTTABLE
+				( NO
+				  , NAME
+				  , BN
+				  , DETAIL )
+			VALUES ( #{no}
+				  , #{name}
+				  , #{bn}
+				  , #{detail} )
+
+	</insert>
+
+	<update id="updateSample">
+
+			UPDATE WEBTESTTABLE
+			SET NO=#{no}
+				, NAME=#{name}
+				, BN=#{bn}
+				, DETAIL=#{detail}
+				  WHERE NO=#{no}
+
+	</update>
+
+	<delete id="deleteSample">
+
+			DELETE FROM WEBTESTTABLE
+			WHERE NO=#{no}
+
+	</delete>
+
+	<select id="selectSample" resultMap="sample">
+
+			SELECT
+				NO, NAME, BN, DETAIL
+			FROM WEBTESTTABLE
+			WHERE NO=#{no}
+
+	</select>
+
+	<select id="selectSampleList" parameterType="searchVO" resultType="egovMap">
+
+			SELECT
+				NO, NAME, BN, DETAIL
+			FROM WEBTESTTABLE
+			WHERE 1=1
+			<if test="searchKeyword != null and searchKeyword != ''">
+		        <choose>
+		            <when test="searchCondition == 0">
+						AND	NO LIKE '%' || #{searchKeyword} || '%'
+					</when>
+		            <when test="searchCondition == 1">
+						AND	NAME LIKE '%' || #{searchKeyword} || '%'
+					</when>
+				</choose>
+			</if>
+			ORDER BY NO ASC
+			LIMIT 15 OFFSET #{firstIndex}
+	</select>
+
+	<select id="selectSampleListTotCnt" parameterType="searchVO" resultType="int">
+
+			SELECT COUNT(*) totcnt
+			FROM WEBTESTTABLE
+			WHERE 1=1
+			<if test="searchKeyword != null and searchKeyword != ''">
+		        <choose>
+		            <when test="searchCondition == 0">
+						AND NO LIKE '%' || #{searchKeyword} || '%'
+					</when>
+		            <when test="searchCondition == 1">
+						AND	NAME LIKE '%' || #{searchKeyword} || '%'
+					</when>
+				</choose>
+			</if>
+	</select>
+
+</mapper>
